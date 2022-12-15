@@ -1,12 +1,11 @@
-# ✍️ Write with me
+# ✍️ Collabowriter
 
-A real-time collaborative blog post editor built with GraphQL, React, React Markdown, & AWS AppSync.
+A real-time collaborative blog post editor built with GraphQL, React, React Markdown, & AWS AppSync. (Forked from [here](https://github.com/dabit3/write-with-me) and upgraded to support React v18/Amplify)
 
-This repo goes along with the medium post "How to Build a Real-time Collaborative Markdown Editor with React Hooks, GraphQL & AWS AppSync". Click [here](https://medium.com/open-graphql/how-to-build-a-real-time-collaborative-markdown-editor-with-react-hooks-graphql-aws-appsync-dc0c121683f4) to check it out.
+Nadir Dabit's medium post "How to Build a Real-time Collaborative Markdown Editor with React Hooks, GraphQL & AWS AppSync". Click [here](https://medium.com/open-graphql/how-to-build-a-real-time-collaborative-markdown-editor-with-react-hooks-graphql-aws-appsync-dc0c121683f4) to check it out.
 
-> Try it out at [www.writewithme.dev](https://www.writewithme.dev/#/)
+> Try it out at [collabowriter.neuralmimicry.ai](https://collabowriter.neuralmimicry.ai/#/)
 
-![](writewithme.gif)
 
 ### Base schema
 
@@ -30,7 +29,7 @@ We also have a `clientId` to properly handle GraphQL subscriptions on the client
 
 Deploy this fullstack app with a single click to the Amplify Console:
 
-[![amplifybutton](https://oneclick.amplifyapp.com/button.svg)](https://console.aws.amazon.com/amplify/home#/deploy?repo=https://github.com/dabit3/write-with-me)
+[![amplifybutton](https://oneclick.amplifyapp.com/button.svg)](https://console.aws.amazon.com/amplify/home#/deploy?repo=https://github.com/neuralmimicry/collabowriter)
 
 
 ### Run locally with the Amplify CLI
@@ -38,13 +37,13 @@ Deploy this fullstack app with a single click to the Amplify Console:
 1. Clone the repo
 
 ```sh
-git clone https://github.com/dabit3/write-with-me.git
+git clone https://github.com/neuralmimicry/collabowriter.git
 ```
 
 2. Change into the directory & install dependencies
 
 ```sh
-cd write-with-me
+cd collabowriter
 
 npm install
 ```

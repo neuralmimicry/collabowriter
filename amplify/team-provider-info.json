@@ -1,0 +1,26 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-collabowriter-dev-233941-authRole",
+      "UnauthRoleArn": "arn:aws:iam::673430710491:role/amplify-collabowriter-dev-233941-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::673430710491:role/amplify-collabowriter-dev-233941-authRole",
+      "Region": "eu-west-2",
+      "DeploymentBucketName": "amplify-collabowriter-dev-233941-deployment",
+      "UnauthRoleName": "amplify-collabowriter-dev-233941-unauthRole",
+      "StackName": "amplify-collabowriter-dev-233941",
+      "StackId": "arn:aws:cloudformation:eu-west-2:673430710491:stack/amplify-collabowriter-dev-233941/9cf79fd0-7c08-11ed-8a2f-0a96e72d7ba2",
+      "AmplifyAppId": "d2mo5zstvi2owy"
+    },
+    "categories": {
+      "api": {
+        "collabowriter": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d2mo5zstvi2owy",
+          "type": "manual"
+        }
+      }
+    }
+  }
+}
