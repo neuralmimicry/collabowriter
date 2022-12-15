@@ -5,10 +5,11 @@ import { v4 as uuidv4 } from 'uuid'
 import { listPosts } from './graphql/queries'
 import { onCreatePost } from './graphql/subscriptions'
 import { API, graphqlOperation } from 'aws-amplify'
+import {Observable} from 'zen-observable-ts'
 
-async function fetchPosts(dispatch) {
+async function fetchPosts(dispatch: any) {
   try {
-    const postData = await API.graphql(graphqlOperation(listPosts))
+    const postData: any = await API.graphql(graphqlOperation(listPosts))
     dispatch({
       type: 'fetchPostsSuccess',
       posts: postData.data.listPosts.items
@@ -27,7 +28,7 @@ const initialState = {
   error: false
 }
 
-function reducer(state, action) {
+function reducer(state: any, action: any) {
   switch (action.type) {
     case 'fetchPostsSuccess':
       return {
@@ -54,13 +55,13 @@ function reducer(state, action) {
   }
 }
 
-const Posts = (props) => {
+const Posts = (props: any) => {
   const [isOpen, toggleModal] = useState(false)
   const [input, updateInput] = useState('')
   const [postsState, dispatch] = useReducer(reducer, initialState)
 
   function toggle() { toggleModal(!isOpen) }
-  function onChange(e) { updateInput(e.target.value) }
+  function onChange(e: any) { updateInput(e.target.value) }
 
   function navigate() {
     if (input === '') return
@@ -74,7 +75,8 @@ const Posts = (props) => {
   }, [])
 
   useEffect(() => {
-    const subscriber = API.graphql(graphqlOperation(onCreatePost)).subscribe({
+    const subscriber = API.graphql(graphqlOperation(onCreatePost)) as Observable<any>;
+    const subscription = subscriber.subscribe({
       next: data => {
         const postFromSub = data.value.data.onCreatePost
         dispatch({
@@ -83,7 +85,7 @@ const Posts = (props) => {
         })
       }
     });
-    return () => subscriber.unsubscribe()
+    return () => subscription.unsubscribe()
   }, [])
 
   return (
@@ -113,7 +115,7 @@ const Posts = (props) => {
         }
         <div {...styles.postList}>
           {
-            postsState.posts.map((p, i) => (
+            postsState.posts.map((p: any, i: any) => (
               <div key={i}>
                 <Link to={`/post/${p.id}/${p.title}`} {...styles.link}>
                   <h1 {...styles.postTitle}>{p.title}</h1>
@@ -159,6 +161,7 @@ const Posts = (props) => {
 
 export default Posts
 
+// @ts-ignore
 const Modal = ({ onChange, input, navigate, toggle }) => (
   <div {...styles.modalContainer}>
     <input

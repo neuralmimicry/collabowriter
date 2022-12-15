@@ -10,12 +10,15 @@ import { Amplify } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 
 import config from './aws-exports'
+import {HashRouter} from "react-router-dom";
 Amplify.configure(config);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
-    <Main />
+      <HashRouter>
+        <Main />
+      </HashRouter>
   </React.StrictMode>
 );
 

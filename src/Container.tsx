@@ -3,7 +3,7 @@ import { css } from 'glamor'
 
 type Props = {
   children: ReactNode;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 };
 
 const Container = ({ children, style }: Props) => {

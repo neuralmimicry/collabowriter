@@ -1,19 +1,20 @@
-import React, { useCallback, useMemo, useState, useReducer, useEffect } from 'react'
+import React, { useState, useReducer, useEffect } from 'react'
 import { css } from 'glamor'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { API, graphqlOperation } from 'aws-amplify'
 import debounce from 'debounce';
 import { createPost, updatePost as UpdatePost } from './graphql/mutations'
 import { onUpdatePostWithId } from './graphql/subscriptions'
 import { v4 as uuidv4 } from 'uuid'
 import Container from './Container'
+import {Observable} from 'zen-observable-ts'
 
 const CLIENTID = uuidv4()
 
 const ReactMarkdown = require('react-markdown')
 const input = `# This is a header\n\nAnd this is a paragraph\n\n`
 
-function reducer(state, action) {
+function reducer(state: any, action: any) {
   switch (action.type) {
     case 'updateMarkdown':
       return {
@@ -34,32 +35,37 @@ function reducer(state, action) {
   }
 }
 
-async function createNewPost(post, dispatch) {
+async function createNewPost(post: any, dispatch: any) {
   try {
-    const postData = await API.graphql(graphqlOperation(createPost, { input: post }))
+    const postData: any = await API.graphql(graphqlOperation(createPost, { input: post }))
     dispatch({
       type: 'updatePost',
       post: {
         ...postData.data.createPost,
-        clientId: CLIENTID
+        clientId: CLIENTID,
+        createdAt: new Date().toISOString()
       }
     })
   } catch (err) {
-    if (err.errors[0].errorType === "DynamoDB:ConditionalCheckFailedException") {
-      const existingPost = err.errors[0].data
-      dispatch({
-        type: 'updatePost',
-        post: {
-          ...existingPost,
-          clientId: CLIENTID
-        }
-      })
+    if (err instanceof Error) {
+      // @ts-ignore
+      if (err.errors[0].errorType === "DynamoDB:ConditionalCheckFailedException") {
+        // @ts-ignore
+        const existingPost = err.errors[0].data
+        dispatch({
+          type: 'updatePost',
+          post: {
+            ...existingPost,
+            clientId: CLIENTID
+          }
+        })
+      }
     }
   }
 }
 
 const debouncedUpdatePost = debounce(
-  async function updatePost(post) {
+  async function updatePost(post: any) {
     try {
       await API.graphql(graphqlOperation(UpdatePost, { input: post }))
       console.log('post has been updated!')
@@ -70,12 +76,15 @@ const debouncedUpdatePost = debounce(
   250
 )
 
-const Post = ({ match: { params } }) => {
+// @ts-ignore
+const Post = (props) => {
+  const params = useParams();
   const post = {
     id: params.id,
     title: params.title,
     clientId: CLIENTID,
-    markdown: '# Loading...'
+    markdown: '# Loading...',
+    createdAt: new Date().toISOString()
   }
   const [postState, dispatch] = useReducer(reducer, post);
   const [isEditing, updateIsEditing] = useState(false)
@@ -90,9 +99,9 @@ const Post = ({ match: { params } }) => {
       markdown: input
     }
     createNewPost(post, dispatch)
-  }, [])
+  }, [postState])
 
-  function updateMarkdown(e) {
+  function updateMarkdown(e: any) {
     dispatch({
       type: 'updateMarkdown',
       markdown: e.target.value,
@@ -104,10 +113,10 @@ const Post = ({ match: { params } }) => {
       createdAt: post.createdAt,
       title: postState.title
     }
-    debouncedUpdatePost(newPost, dispatch)
+    debouncedUpdatePost(newPost)
   }
 
-  function updatePostTitle(e) {
+  function updatePostTitle(e: any) {
     dispatch({
       type: 'updateTitle',
       title: e.target.value
@@ -119,13 +128,14 @@ const Post = ({ match: { params } }) => {
       createdAt: post.createdAt,
       title: e.target.value
     }
-    debouncedUpdatePost(newPost, dispatch)
+    debouncedUpdatePost(newPost)
   }
 
   useEffect(() => {
     const subscriber = API.graphql(graphqlOperation(onUpdatePostWithId, {
       id: post.id
-    })).subscribe({
+    })) as Observable<any>;
+    const subscription = subscriber.subscribe({
       next: data => {
         if (CLIENTID === data.value.data.onUpdatePostWithId.clientId) return
         const postFromSub = data.value.data.onUpdatePostWithId
@@ -135,8 +145,8 @@ const Post = ({ match: { params } }) => {
         })
       }
     });
-    return () => subscriber.unsubscribe()
-  }, [])
+    return () => subscription.unsubscribe()
+  }, [post.id])
 
   return (
     <Container>
