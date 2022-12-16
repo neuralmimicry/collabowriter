@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from 'react'
 import { css } from 'glamor'
-import { Link } from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 import { listPosts } from './graphql/queries'
 import { onCreatePost } from './graphql/subscriptions'
@@ -59,6 +59,7 @@ const Posts = (props: any) => {
   const [isOpen, toggleModal] = useState(false)
   const [input, updateInput] = useState('')
   const [postsState, dispatch] = useReducer(reducer, initialState)
+  const navigation = useNavigate()
 
   function toggle() { toggleModal(!isOpen) }
   function onChange(e: any) { updateInput(e.target.value) }
@@ -67,7 +68,7 @@ const Posts = (props: any) => {
     if (input === '') return
     const id = uuidv4()
     const url = `/post/${id}/${input}`
-    props.history.push(url)
+    navigation(url)
   }
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import Post from './Post'
 import Posts from './Posts'
 
 function Main() {
-  return (
+    return (
         <Routes>
           <Route path='/' element={<Posts />} />
           <Route path="/post/:id/:title?" element={<Post />} />
