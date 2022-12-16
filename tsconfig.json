@@ -24,7 +24,7 @@
     "src"
   ],
   "paths": {
-    "path": ["node_modules/path-browserify"],
-    "stream": ["node_modules/stream-browserify"]
+    "path": ["./node_modules/path-browserify"],
+    "stream": ["./node_modules/stream-browserify"]
   }
 }
