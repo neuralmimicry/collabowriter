@@ -35,7 +35,7 @@ function reducer(state: any, action: any) {
   }
 }
 
-async function createNewPost(post: any, dispatch: any) {
+async function createNewPost(post: any, dispatch: React.Dispatch<any>) {
   try {
     const postData: any = await API.graphql(graphqlOperation(createPost, { input: post }))
     dispatch({

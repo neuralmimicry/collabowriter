@@ -80,6 +80,7 @@ const Posts = (props: any) => {
     const subscription = subscriber.subscribe({
       next: data => {
         const postFromSub = data.value.data.onCreatePost
+        console.log(JSON.stringify(postFromSub, null, 2))
         dispatch({
           type: 'addPostFromSubscription',
           post: postFromSub
