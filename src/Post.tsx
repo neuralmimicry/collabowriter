@@ -76,8 +76,7 @@ const debouncedUpdatePost = debounce(
   250
 )
 
-// @ts-ignore
-const Post = (props) => {
+const Post = () => {
   const params = useParams();
   const post = {
     id: params.id,
@@ -98,7 +97,7 @@ const Post = (props) => {
       ...postState,
       markdown: input
     }
-    createNewPost(post, dispatch)
+    createNewPost(post, dispatch).then()
   }, [postState])
 
   function updateMarkdown(e: any) {
@@ -113,7 +112,7 @@ const Post = (props) => {
       createdAt: post.createdAt,
       title: postState.title
     }
-    debouncedUpdatePost(newPost)
+    debouncedUpdatePost(newPost).then()
   }
 
   function updatePostTitle(e: any) {
@@ -128,7 +127,7 @@ const Post = (props) => {
       createdAt: post.createdAt,
       title: e.target.value
     }
-    debouncedUpdatePost(newPost)
+    debouncedUpdatePost(newPost).then()
   }
 
   useEffect(() => {
