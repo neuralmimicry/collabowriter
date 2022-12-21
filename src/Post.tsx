@@ -1,13 +1,15 @@
 import React, { useState, useReducer, useEffect } from 'react'
 import { css } from 'glamor'
 import { Link, useParams } from 'react-router-dom'
-import { API, graphqlOperation } from 'aws-amplify'
+import { API, graphqlOperation, Logger } from 'aws-amplify'
 import debounce from 'debounce';
 import { createPost, updatePost as UpdatePost } from './graphql/mutations'
 import { onUpdatePostWithId } from './graphql/subscriptions'
 import { v4 as uuidv4 } from 'uuid'
 import Container from './Container'
 import {Observable} from 'zen-observable-ts'
+
+const logger = new Logger('PostLogger', 'DEBUG');
 
 const CLIENTID = uuidv4()
 
@@ -43,13 +45,13 @@ async function createNewPost(post: any, dispatch: React.Dispatch<any>) {
       post: {
         ...postData.data.createPost,
         clientId: CLIENTID,
-        createdAt: new Date().toISOString()
+        ...postData.data.createdAt
       }
     })
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof Error) {
-      // @ts-ignore
-      if (err.errors[0].errorType === "DynamoDB:ConditionalCheckFailedException") {
+      logger.error('Error in Post: ', err);
+      if (err.message === "DynamoDB:ConditionalCheckFailedException") {
         // @ts-ignore
         const existingPost = err.errors[0].data
         dispatch({
@@ -69,8 +71,10 @@ const debouncedUpdatePost = debounce(
     try {
       await API.graphql(graphqlOperation(UpdatePost, { input: post }))
       console.log('post has been updated!')
+      logger.info('post has been updated.')
     } catch (err) {
       console.log('error:', err)
+      logger.error('Error in updatePost: ', err)
     }
   },
   250
@@ -82,8 +86,7 @@ const Post = () => {
     id: params.id,
     title: params.title,
     clientId: CLIENTID,
-    markdown: '# Loading...',
-    createdAt: new Date().toISOString()
+    markdown: '# Loading...'
   }
   const [postState, dispatch] = useReducer(reducer, post);
   const [isEditing, updateIsEditing] = useState(false)
@@ -109,7 +112,6 @@ const Post = () => {
       id: post.id,
       markdown: e.target.value,
       clientId: CLIENTID,
-      createdAt: post.createdAt,
       title: postState.title
     }
     debouncedUpdatePost(newPost).then()
@@ -124,7 +126,6 @@ const Post = () => {
       id: post.id,
       markdown: postState.markdown,
       clientId: CLIENTID,
-      createdAt: post.createdAt,
       title: e.target.value
     }
     debouncedUpdatePost(newPost).then()

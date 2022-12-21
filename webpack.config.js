@@ -3,7 +3,7 @@ module.exports = function (webpackEnv) {
     resolve: {
       extensions: [".js", ".json", ".ts", ".tsx"],
       fallback: {
-        path: require.resolve("path-browserify"),
+        path: require.resolve("build"),
         stream: require.resolve("stream-browserify")
       }
     }
