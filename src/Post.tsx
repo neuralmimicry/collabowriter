@@ -70,10 +70,8 @@ const debouncedUpdatePost = debounce(
   async function updatePost(post: any) {
     try {
       await API.graphql(graphqlOperation(UpdatePost, { input: post }))
-      console.log('post has been updated!')
       logger.info('post has been updated.')
     } catch (err) {
-      console.log('error:', err)
       logger.error('Error in updatePost: ', err)
     }
   },

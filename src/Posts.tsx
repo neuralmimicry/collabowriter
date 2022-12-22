@@ -4,8 +4,10 @@ import {Link, useNavigate} from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 import { listPosts } from './graphql/queries'
 import { onCreatePost } from './graphql/subscriptions'
-import { API, graphqlOperation } from 'aws-amplify'
+import {API, graphqlOperation, Logger} from 'aws-amplify'
 import {Observable} from 'zen-observable-ts'
+
+const logger = new Logger('PostLogger', 'DEBUG');
 
 async function fetchPosts(dispatch: any) {
   try {
@@ -15,7 +17,7 @@ async function fetchPosts(dispatch: any) {
       posts: postData.data.listPosts.items
     })
   } catch (err) {
-    console.log('error fetching posts...: ', err)
+    logger.error('error fetching posts...: ', err)
     dispatch({
       type: 'fetchPostsError',
     })
@@ -55,7 +57,7 @@ function reducer(state: any, action: any) {
   }
 }
 
-const Posts = (props: any) => {
+const Posts = () => {
   const [isOpen, toggleModal] = useState(false)
   const [input, updateInput] = useState('')
   const [postsState, dispatch] = useReducer(reducer, initialState)
@@ -72,7 +74,7 @@ const Posts = (props: any) => {
   }
 
   useEffect(() => {
-    fetchPosts(dispatch)
+    fetchPosts(dispatch).then()
   }, [])
 
   useEffect(() => {
@@ -80,7 +82,7 @@ const Posts = (props: any) => {
     const subscription = subscriber.subscribe({
       next: data => {
         const postFromSub = data.value.data.onCreatePost
-        console.log(JSON.stringify(postFromSub, null, 2))
+        logger.info(JSON.stringify(postFromSub, null, 2))
         dispatch({
           type: 'addPostFromSubscription',
           post: postFromSub
